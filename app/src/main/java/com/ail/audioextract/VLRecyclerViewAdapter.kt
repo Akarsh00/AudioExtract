@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.bumptech.glide.Glide
+import idv.luchafang.videotrimmerexample.getFile_duration_inDetail
 import kotlinx.android.synthetic.main.video_single_item.view.*
 
 class VLRecyclerViewAdapter(private val interaction: VLRecyclerViewAdapter.Interaction? = null) : RecyclerView.Adapter<VLRecyclerViewAdapter.VideoItemHolder>() {
@@ -20,7 +21,7 @@ class VLRecyclerViewAdapter(private val interaction: VLRecyclerViewAdapter.Inter
             }
             Glide.with(itemView.context).load(item.file_path).thumbnail(0.05f).centerCrop().into(itemView.imageView)
             tv_title.text = item.file_name
-//            tv_VideoTime.text = item.duration.toInt().getFile_duration_inDetail()
+            tv_VideoTime.text = item.duration.toInt().getFile_duration_inDetail()
 
         }
 

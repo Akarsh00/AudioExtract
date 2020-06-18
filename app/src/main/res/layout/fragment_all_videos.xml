@@ -18,13 +18,14 @@
             android:id="@+id/rv_videosList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#e3e3e3"
-            android:visibility="gone"
-            android:elevation="@dimen/size_10dp"/>
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_videosAlbum"
             android:layout_width="match_parent"
+            android:background="#e3e3e3"
+            android:elevation="@dimen/size_10dp"
+            android:visibility="gone"
             android:layout_height="match_parent" />
     </FrameLayout>
 

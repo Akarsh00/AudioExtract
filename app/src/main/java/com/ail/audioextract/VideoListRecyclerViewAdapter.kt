@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.bumptech.glide.Glide
+import idv.luchafang.videotrimmerexample.getFile_duration_inDetail
 import kotlinx.android.synthetic.main.video_single_item.view.*
 
 

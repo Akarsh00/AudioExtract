@@ -40,11 +40,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(BaseMainViewModel::class.java)
-        val pm1 = requireContext().packageManager
-        val hasPerm1 = pm1.checkPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                requireContext().packageName)
-        if (hasPerm1 == PackageManager.PERMISSION_GRANTED) {
+        if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
             viewModel.queryListVideosFromBucket(requireContext(), null)
         }
     }
@@ -52,40 +48,23 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         builder = AlertDialog.Builder(requireContext())
+        rv_videosList.adapter = adapter
+        rv_videosList.layoutManager = GridLayoutManager(requireContext(), 3)
 
+
+        rv_videosAlbum.adapter = videoAlbumListAdapter
+        rv_videosAlbum.layoutManager = LinearLayoutManager(requireContext())
         home.setOnClickListener {
 
-            if (rv_videosAlbum.visibility == View.VISIBLE) {
-                rv_videosAlbum.visibility = View.GONE
-            } else {
-                rv_videosList.visibility = View.VISIBLE
-
-            }
+            showOrHideAlbumList()
         }
-        val pm = requireContext().packageManager
-        val hasPerm = pm.checkPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                requireContext().packageName)
-        if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+        if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
             viewModel.getInternalStorageDataWithCursor(requireContext())?.observe(viewLifecycleOwner, Observer {
                 if (!it.isNullOrEmpty()) {
-                    rv_videosAlbum.adapter = videoAlbumListAdapter
-                    rv_videosAlbum.layoutManager = LinearLayoutManager(requireContext())
                     videoAlbumListAdapter.submitList(it)
                     showOrHIdeAlbumItem.text = "All Videos"
                 }
             })
-
-        }
-
-        rv_videosList.adapter = adapter
-        rv_videosList.layoutManager = GridLayoutManager(requireContext(), 3)
-        val pm1 = requireContext().packageManager
-        val hasPerm1 = pm1.checkPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                requireContext().packageName)
-        if (hasPerm1 == PackageManager.PERMISSION_GRANTED) {
-
 
             viewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
                 builder.setView(R.layout.progress_dialog)
@@ -97,10 +76,17 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
 
 
             })
-
         }
 
 
+    }
+
+    private fun checkStoragePermissionGrantedOrNot(): Int {
+        val pm = requireContext().packageManager
+        val hasPerm = pm.checkPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                requireContext().packageName)
+        return hasPerm
     }
 
 
@@ -151,15 +137,18 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
             showAllVideosList()
 
         }
-
-
         showOrHIdeAlbumItem.text = item.folderName
+        showOrHideAlbumList()
+
+    }
+
+    private fun showOrHideAlbumList() {
         if (rv_videosAlbum.visibility == View.VISIBLE) {
             rv_videosAlbum.visibility = View.GONE
         } else {
             rv_videosAlbum.visibility = View.VISIBLE
-        }
 
+        }
     }
 
     private fun showAllVideosList() {
