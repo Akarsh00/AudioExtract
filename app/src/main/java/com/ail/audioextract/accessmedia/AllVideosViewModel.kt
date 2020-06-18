@@ -206,7 +206,7 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
                     commonFile.file_path = cursor.getString(videoData)
                     commonFile.createdTime = dateModified
                     commonFile.lastPlayedDuration = cursor.getLong(bookmark)
-                    commonFile.duration = durations.toString()
+                    commonFile.duration = cursor.getLong(durations).toString()
                     commonFile.isDirectory = false
                     commonFile.setFindDuplicate(false)
                     if (commonFile.file_path != null && !commonFile.file_path.equals("")) {
