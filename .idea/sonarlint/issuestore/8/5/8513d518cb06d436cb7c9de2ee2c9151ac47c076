@@ -1,0 +1,20 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(˜¦‰ƒúÿÿÿÿ
+q
+java:S1104	"VMake folderName a static final constant or non-public and provide accessors if needed.(ãÊèªøÿÿÿÿ
+q
+java:S1104"VMake folderPath a static final constant or non-public and provide accessors if needed.(€µ¶êûÿÿÿÿ
+o
+java:S1104"ZMake firstVideoPath a static final constant or non-public and provide accessors if needed.(Îäún
+j
+java:S1104"UMake fileCount a static final constant or non-public and provide accessors if needed.(ÓŽßH
+o
+java:S1104"TMake fileSize a static final constant or non-public and provide accessors if needed.(Ç ¢ýÿÿÿÿÿ
+o
+java:S1104"YMake last_modified a static final constant or non-public and provide accessors if needed.(•ä‹¨
+k
+java:S1104"UMake bucket_id a static final constant or non-public and provide accessors if needed.(×Çá•
+m
+java:S1104"RMake newTag a static final constant or non-public and provide accessors if needed.(ƒ²Õ®üÿÿÿÿ
+m	java:S116"XRename this field "last_modified" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•ä‹¨
+i	java:S116"TRename this field "bucket_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(×Çá•

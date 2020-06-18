@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="size_15dp">15dp</dimen>
+    <dimen name="size_20dp">20dp</dimen>
+    <dimen name="size_5dp">5dp</dimen>
+    <dimen name="size_10dp">10dp</dimen>
+
+
+
+    <!--share icons in final activity-->
+    <dimen name="icon_image_border_padding">8dp</dimen>
+    <dimen name="share_icons_bottom_text_size">12sp</dimen>
+    <dimen name="share_icons_size">52dp</dimen>
+</resources>

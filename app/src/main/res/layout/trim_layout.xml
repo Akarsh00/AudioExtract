@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/trimLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#e3e3e3"
+    android:visibility="gone">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="#ffffff">
+
+        <ImageView
+            android:id="@+id/iv_trimLayoutCancel"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close_24" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Cut"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/iv_trimLayoutDone"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_check_24" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_StartSeek"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/round_corner"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="0:0:0"
+                android:textColor="@color/white" />
+
+
+            <TextView
+                android:id="@+id/durationView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:textColor="#F06292"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_EndSeek"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/round_corner"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="0:0:0"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <idv.luchafang.videotrimmer.VideoTrimmerView        android:id="@+id/videoTrimmerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_20dp"
+        android:layout_marginBottom="11dp"
+        app:vtv_window_bar_width="10dp"
+        app:vtv_window_border_color="@color/appMainColor"
+        app:vtv_window_border_width="2dp"
+        app:vtv_window_left_bar="@drawable/trimmer_left_bar"
+        app:vtv_window_right_bar="@drawable/trimmer_right_bar" />
+
+
+</LinearLayout>

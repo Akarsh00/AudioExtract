@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/topToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:background="@color/appMainColor"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--
+
+    <ImageView
+        android:id="@+id/btn_cancel"
+        android:layout_width="52dp"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="center"
+        android:tint="@color/white"
+        android:visibility="visible"
+        android:src="@drawable/ic_arrow_back_outline" />
+-->
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="Audio Save"
+        android:clickable="true"
+        android:id="@+id/showOrHIdeAlbumItem"
+        android:layout_marginStart="@dimen/size_15dp"
+        android:maxLength="25"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/home"
+        android:layout_width="52dp"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:tint="@color/white"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_album_white_24" />
+</LinearLayout>

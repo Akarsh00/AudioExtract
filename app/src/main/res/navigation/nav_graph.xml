@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/allVideosFragment">
+
+    <fragment
+        android:id="@+id/allVideosFragment"
+        android:name="com.ail.audioextract.views.fragments.AllVideosFragment"
+        android:label="fragment_all_videos"
+        tools:layout="@layout/fragment_all_videos" >
+        <action
+            android:id="@+id/action_allVideosFragment_to_trimFragment"
+            app:destination="@id/trimFragment" />
+        <action
+            android:id="@+id/action_allVideosFragment_to_savedAudioListFragments"
+            app:destination="@id/savedAudioListFragments" />
+    </fragment>
+    <fragment
+        android:id="@+id/finalSavedFragment"
+        android:name="com.ail.audioextract.views.fragments.FinalSavedFragment"
+        android:label="fragment_final_saved"
+        tools:layout="@layout/fragment_final_saved" >
+        <action
+            android:id="@+id/action_finalSavedFragment_to_savedAudioListFragments"
+            app:destination="@id/savedAudioListFragments" />
+        <argument
+            android:name="convertdAudioPath"
+            android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/trimFragment"
+        android:name="com.ail.audioextract.views.fragments.TrimFragment"
+        android:label="fragment_trim"
+        tools:layout="@layout/fragment_trim" >
+        <action
+            android:id="@+id/action_trimFragment_to_finalSavedFragment"
+            app:destination="@id/finalSavedFragment" />
+        <argument android:name="videoToTrim" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedAudioListFragments"
+        android:name="com.ail.audioextract.views.fragments.SavedAudioListFragments"
+        android:label="fragment_saved_audio_list_fragments"
+        tools:layout="@layout/fragment_saved_audio_list_fragments" />
+</navigation>

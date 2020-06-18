@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>-->
+
+<LinearLayout android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <!-- <ImageView
+             android:id="@+id/checkView"
+             android:layout_width="24dp"
+             android:layout_height="24dp"
+             android:layout_gravity="left"
+             android:layout_margin="3dp"
+             android:layout_marginStart="6dp"
+             android:elevation="16dp"
+             android:visibility="gone"
+             app:srcCompat="@drawable/ic_mutli_select_circle" />
+ -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="@dimen/size_5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_thumbnail_layer" />
+
+        <ImageView
+
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom"
+            android:elevation="@dimen/size_15dp"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <ImageView
+                android:id="@+id/play_icon_video"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_video_icon"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_VideoTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:elevation="8dp"
+                android:gravity="bottom"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#555555"
+        android:textSize="12sp"
+        android:layout_marginBottom="5dp"
+        android:maxLines="2"
+        android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+        <!--
+
+        <ImageView
+            android:id="@+id/img_download"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="4dp"
+            android:elevation="@dimen/size_10dp"
+            android:visibility="visible" />
+-->
+
+
+    </LinearLayout>
+<!--</layout>-->

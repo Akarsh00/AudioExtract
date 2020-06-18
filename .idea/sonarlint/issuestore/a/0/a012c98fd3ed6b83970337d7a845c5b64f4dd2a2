@@ -1,0 +1,10 @@
+
+tkotlin:S100"]Rename function "getAllSdCardTrack_Beans" to match the regular expression ^[a-z][a-zA-Z0-9]*$(½ÄÒÍ
+;kotlin:S125t"Remove this commented out code.(²•¯úÿÿÿÿ
+>kotlin:S125‹"Remove this commented out code.(—Ì¶Á8ö»Ä¬.
+ekotlin:S101K"NRename class "Track_Bean" to match the regular expression ^[A-Z][a-zA-Z0-9]*$.(ìöÔº
+Bkotlin:S125Q"Remove this commented out code.(›Áîèÿÿÿÿÿ8ĞÀãó«.
+<kotlin:S125("Remove this commented out code.(ùÖ‡/8à¸àó«.
+>kotlin:S125"Remove this commented out code.(±ÄËÅ8ã‰¡¬.
+hkotlin:S117"RRename this local variable to match the regular expression "^[_a-z][a-zA-Z0-9]*$".(ª‡„D
+Kkotlin:S1066".Merge this "if" statement with the nested one.(™¹¬ÿÿÿÿÿ

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/size_15dp"
+    android:orientation="vertical">
+
+    <!--  <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="File Name: "/>-->
+    <EditText
+        android:id="@+id/tv_fileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="File Format: " />
+
+    <Spinner
+        android:id="@+id/audioFormatSpinner"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="-8dp" />
+    <View
+        android:layout_width="130dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#e3e3e3"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/showTrimLayoutButton"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_border"
+            android:text="CUT"
+            android:textAllCaps="false"
+            android:textColor="@color/appMainColor"
+            android:textSize="16sp"
+
+            />
+
+        <Button
+            android:id="@+id/fetchAudioFromSelectedPosition"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_fill"
+            android:text="Convert"
+
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+        <Button
+            android:id="@+id/fetchVideoFromSelectedPosition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="Save Trim Video"
+            android:textAllCaps="false"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
