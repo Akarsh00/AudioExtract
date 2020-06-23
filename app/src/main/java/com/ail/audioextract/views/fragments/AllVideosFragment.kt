@@ -226,11 +226,17 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
         var menuItem = menu.findItem(R.id.action_search_video)
 
         var searchView: SearchView = menuItem.actionView as SearchView
+
+        val item = menu.findItem(R.id.pickVideo)
+
         searchView.setOnCloseListener {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
+//            item.isVisible = true
+
             false
         }
         searchView.setOnSearchClickListener {
+  //          item.isVisible = false
             toolbar.navigationIcon = null
             if (rv_videosAlbum.visibility == View.VISIBLE) {
                 rv_videosAlbum.visibility = View.GONE

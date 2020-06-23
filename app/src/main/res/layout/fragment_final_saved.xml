@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".tobedelete.FinalActivity">
+    android:layout_height="match_parent">
     <include
         android:id="@+id/toolbar"
         layout="@layout/final_activity_toolbar" />
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:background="#FAF7F7"
+        android:background="@null"
         android:id="@+id/ll"
         android:paddingTop="@dimen/size_10dp"
         android:paddingBottom="@dimen/size_10dp"
@@ -60,6 +59,24 @@
 
         <View
             android:id="@+id/devider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/layout"
+            android:layout_marginLeft="@dimen/size_10dp"
+            android:layout_marginRight="@dimen/size_10dp"
+            android:background="#e3e3e3" />
+
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:show_timeout="0"
+            app:hide_on_touch="false"
+            app:controller_layout_id="@layout/audio_player_trim_controller"
+            app:use_controller="true" />
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/layout"

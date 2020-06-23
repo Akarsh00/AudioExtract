@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.ail.audioextract.AudioExtractor
 import com.ail.audioextract.R
+import com.ail.audioextract.SAVED_AUDIO_DIR_NAME
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
@@ -206,7 +207,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
     private fun getDestinationPath(): String {
         val mFinalPath: String
         val folder = Environment.getExternalStorageDirectory()
-        mFinalPath = folder.path + File.separator + "SAVED_AUDIO_DIR_NAME"
+        mFinalPath = folder.path + File.separator +/* "SAVED_AUDIO_DIR_NAME"*/SAVED_AUDIO_DIR_NAME
         if (!File(mFinalPath).exists()) {
             File(mFinalPath).mkdir()
         }

@@ -47,15 +47,9 @@ Fapp/src/main/java/com/ail/audioextract/VideoListRecyclerViewAdapter.kt,5/f/5f4
 .app/src/main/res/drawable/ic_arrow_back_24.xml,1/3/137d1ee27a7f64d0a03838b2824e4832f94e4a56
 b
 2app/src/main/res/drawable/ic_search_white_24dp.xml,4/0/401cb96d2121374dd5ed6d4e8183128d7515ec0a
-]
--app/src/main/res/layout/album_single_item.xml,7/d/7d25517eff2d467b677f958c238ede76b50209db
-b
-2app/src/main/res/layout/final_activity_toolbar.xml,2/9/29c0ad958c39b8e18860560afb170ee88ccac0fd
 S
 #app/src/main/res/menu/home_menu.xml,d/4/d4a5b0547f18166b6a5236d8dc7b7f493f97e395
 Y
 )app/src/main/res/navigation/nav_graph.xml,b/a/baffce053da291d96fb575a09f2bbe9aaa9c4be9
-R
-"app/src/main/res/values/colors.xml,9/6/969faa2a5d9f5e8390e958d2c07f2cfd54676e6b
 R
 "app/src/main/res/values/styles.xml,f/7/f79cc2688e29fcbc286fda14ae07b27c9e83690f

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/appMainColor"
-        app:title="Saved Videos"
+        app:title="Saved Audios"
         app:titleTextColor="@color/white"
         android:id="@+id/toolbar"/>
     <androidx.recyclerview.widget.RecyclerView

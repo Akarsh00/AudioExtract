@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="#555555"
-        app:controller_layout_id="@layout/player_main_screen_controller"
+        app:controller_layout_id="@layout/video_player_trim_controller"
         app:use_controller="true" />
 
     <include layout="@layout/trim_layout"/>

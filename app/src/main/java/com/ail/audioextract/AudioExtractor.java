@@ -104,8 +104,14 @@ public class AudioExtractor {
                 }
             }
         }
-        muxer.stop();
-        muxer.release();
+            try {
+
+                muxer.stop();
+                muxer.release();
+            } catch (IllegalStateException e) {
+                // expected
+                Log.d(TAG, "genVideoUsingMuxer: "+e);
+            }
         return;
     }
 }

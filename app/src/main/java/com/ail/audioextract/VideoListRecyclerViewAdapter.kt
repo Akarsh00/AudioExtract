@@ -88,8 +88,8 @@ class VideoListRecyclerViewAdapter(private val interaction: VideoListRecyclerVie
                     constraint: CharSequence,
                     results: FilterResults
             ) {
-                var filteredList=results.values as MutableList<VideoFileInfo>
-                submitList(filteredList,true)
+                val filteredList=results.values /*as MutableList<VideoFileInfo>*/
+                submitList(filteredList as List<VideoFileInfo>,true)
             }
 
             override fun performFiltering(constraint: CharSequence): FilterResults {
