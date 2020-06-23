@@ -70,6 +70,7 @@
             android:id="@+id/rv_videosAlbum"
             android:layout_width="match_parent"
             android:elevation="14dp"
+
             android:visibility="gone"
             android:background="#D7FFFFFF"
             android:layout_height="match_parent" />

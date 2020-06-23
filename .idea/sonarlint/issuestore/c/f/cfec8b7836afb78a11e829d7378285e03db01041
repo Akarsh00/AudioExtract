@@ -1,10 +1,10 @@
 
+s	java:S135W"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆžÿÿÿÿÿ
 o
 java:S2293#"YReplace the type specification in this constructor call with the diamond operator ("<>").(¨½ õ
-1
-java:S3626m"Remove this redundant jump.(ûÁÝ…
-s	java:S135W"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆžÿÿÿÿÿ
-m
-java:S3776"RRefactor this method to reduce its Cognitive Complexity from 30 to the 15 allowed.(†Â ·ÿÿÿÿÿ
 b
 java:S1871+"LThis branch's code block is the same as the block for the branch on line 41.(æ…ƒ‹
+1
+java:S3626s"Remove this redundant jump.(ûÁÝ…
+t
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(žÔž›ùÿÿÿÿ8Õ¬·„®.

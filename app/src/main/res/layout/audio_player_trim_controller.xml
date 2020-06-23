@@ -83,8 +83,8 @@
                         android:foreground="?attr/selectableItemBackground"
                         app:bar_height="2dp"
                         app:buffered_color="#e3e3e3"
-                        app:played_color="#C2185B"
-                        app:scrubber_color="#C2185B"
+                        app:played_color="@color/colorPrimaryDark"
+                        app:scrubber_color="@color/colorPrimaryDark"
                         app:unplayed_color="#e3e3e3" />
                     <!--            app:played_color="#FF7543"
             -->

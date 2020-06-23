@@ -6,12 +6,10 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
 import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.ail.audioextract.RECENT_FOLDER_NAME
 import com.ail.audioextract.VideoSource.*
 import idv.luchafang.videotrimmerexample.getCountOfVideo
@@ -42,7 +40,6 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
             "count(1)")
 
 
-
     private val VIDEO_PROJECTION = arrayOf(
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
@@ -62,7 +59,7 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
     private val BUCKET_ORDER_BY = MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME + " ASC" //"MAX(datetaken) DESC";
 
 
-     fun getInternalStorageDataWithCursor(mContext: Context): MutableLiveData<List<VideoFolderinfo>> {
+    fun getInternalStorageDataWithCursor(mContext: Context): MutableLiveData<List<VideoFolderinfo>> {
         val data: MutableList<VideoFolderinfo> = ArrayList()
         var cursor: Cursor? = null
         try {
@@ -76,39 +73,44 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
             return allVideoBucket
 
         }
-            val idBucketColNum = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.BUCKET_ID)
-            val videoFolderName = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME)
-            val videoData = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
-            val dateModifiedColNum = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATE_MODIFIED)
+        val idBucketColNum = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.BUCKET_ID)
+        val videoFolderName = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.BUCKET_DISPLAY_NAME)
+        val videoData = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATA)
+        val dateModifiedColNum = cursor.getColumnIndexOrThrow(MediaStore.Video.VideoColumns.DATE_MODIFIED)
 
 
+        var recentVideosCount = 0
+        var recentFirstImageUrl = ""
 
-         var count=0
-
-         if (cursor.moveToFirst()) {
-                CoroutineScope(IO).launch{
-                    fetchVideos(cursor, videoFolderName, idBucketColNum, dateModifiedColNum, videoData, data)
-                    withContext(Main){
-                            cursor.close()
-                        data.forEach {
-                            count=count+it.fileCount.toInt()
+        if (cursor.moveToFirst()) {
+            CoroutineScope(IO).launch {
+                fetchVideos(cursor, videoFolderName, idBucketColNum, dateModifiedColNum, videoData, data)
+                withContext(Main) {
+                    cursor.close()
+                    data.forEach {
+                        if (recentFirstImageUrl == "")
+                        {
+                            recentFirstImageUrl = it.firstVideoPath
                         }
+                        recentVideosCount += it.fileCount.toInt()
 
-                        val commonFile = VideoFolderinfo()
-                        commonFile.folderName = RECENT_FOLDER_NAME
-                        commonFile.bucket_id = null
-                        commonFile.folderPath = ""
-                        commonFile.firstVideoPath = ""
-                        commonFile.fileCount = count.toString()
-                        data.add(0,commonFile)
                     }
-                    }
+
+                    val commonFile = VideoFolderinfo()
+                    commonFile.folderName = RECENT_FOLDER_NAME
+                    commonFile.bucket_id = null
+                    commonFile.folderPath = ""
+                    commonFile.firstVideoPath = recentFirstImageUrl
+                    commonFile.fileCount = recentVideosCount.toString()
+                    data.add(0, commonFile)
+                }
             }
+        }
 
-         //This is for recent
+        //This is for recent
 
 
-         allVideoBucket.postValue(data)
+        allVideoBucket.postValue(data)
         return allVideoBucket
     }
 
@@ -147,7 +149,6 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-
     fun queryListVideosFromBucket(mContext: Context, mBucketId: Array<String>?): MutableLiveData<List<VideoFileInfo?>?> {
         var data: MutableLiveData<List<VideoFileInfo?>?> = MutableLiveData()
         CoroutineScope(Dispatchers.IO).launch {
@@ -175,7 +176,7 @@ class BaseMainViewModel(application: Application) : AndroidViewModel(application
     }
 
     private suspend fun query(mContext: Context, mBucketId: Array<String>?, contentUri: Uri, projection: Array<String>, sortByCol: String,
-                      idCol: String, fileName: String, dateTakenCol: String, dateModifiedCol: String, mimeTypeCol: String): List<VideoFileInfo> {
+                              idCol: String, fileName: String, dateTakenCol: String, dateModifiedCol: String, mimeTypeCol: String): List<VideoFileInfo> {
         val data: MutableList<VideoFileInfo> = LinkedList()
         val selectionMimeType = MediaStore.Video.Media.MIME_TYPE + " like ?"
         val selectionArgs = arrayOf("%video%")
