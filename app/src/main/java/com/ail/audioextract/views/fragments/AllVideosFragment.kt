@@ -138,7 +138,14 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
 
 
                 videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
-    //                dialog.dismiss()
+                appBaseViewModel.queryListVideosFromBucket(requireContext(), null)
+                appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
+                    if (!it.isNullOrEmpty()) {
+                        videoAlbumListAdapter.submitList(it)
+                        showOrHIdeAlbumItem.text = RECENT_FOLDER_NAME
+                    }
+                })
+                //                dialog.dismiss()
 
             })
 

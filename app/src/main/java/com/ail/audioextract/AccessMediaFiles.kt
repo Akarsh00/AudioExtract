@@ -1,5 +1,6 @@
 package com.ail.audioextract
 
+import android.R.attr.path
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
@@ -12,6 +13,7 @@ import java.io.File
  */
 
 fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
+   var path= SAVED_AUDIO_DIR_NAME
     val Track_Beans: ArrayList<AudioTrackBean> = ArrayList<AudioTrackBean>()
     val c: Cursor? = context
             .contentResolver
@@ -21,8 +23,9 @@ fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
                     MediaStore.Audio.Media.ALBUM,
                     MediaStore.Audio.Media.DURATION,
                     MediaStore.Audio.Media.DISPLAY_NAME,
-                    MediaStore.Audio.Media.ALBUM_ID), "1=1",
-                    null, null)
+                    MediaStore.Audio.Media.ALBUM_ID),
+                    MediaStore.Audio.Media.DATA + " like ? ",  arrayOf("%Rocks Audio Saved%"), null)
+
     if (c != null) {
         if (c.moveToFirst()) {
             do {
@@ -41,13 +44,16 @@ fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
                 val mFormattedDuration = DateUtils
                         .formatElapsedTime(mDuration / 1000)
                 mTcBean.mDuration = mFormattedDuration
-                if (mTcBean.mPath.contains(SAVED_AUDIO_DIR_NAME)) {
+//                if (mTcBean.mPath.contains(SAVED_AUDIO_DIR_NAME)) {
                     Track_Beans.add(mTcBean)
-                }
+//                }
             } while (c.moveToNext())
             c.close()
         }
     }
+
+
+
     return Track_Beans
 }
 

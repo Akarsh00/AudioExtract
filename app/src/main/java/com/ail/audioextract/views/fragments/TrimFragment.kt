@@ -140,6 +140,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
         if (videoPath.isNotEmpty()) {
             builder.setView(R.layout.progress_dialog)
             val dialog: Dialog = builder.create()
+            dialog.setCancelable(false)
             dialog.show()
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -191,14 +192,15 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
             AudioExtractor().genVideoUsingMuxer(
                     videoPath,
                     outputFilePath,
-                    mTrimStartingPosition.toInt(),
-                    mTrimEndPosition.toInt(),
+                    mTrimStartingPosition,
+                    mTrimEndPosition,
                     true,
                     false
             )
             val file = File(outputFilePath)
             val uri = Uri.fromFile(file)
             val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri)
+
             requireContext().sendBroadcast(intent)
         }
 
