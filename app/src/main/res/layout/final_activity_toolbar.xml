@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:background="@color/appMainColor"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+ >
 
 
     <ImageView

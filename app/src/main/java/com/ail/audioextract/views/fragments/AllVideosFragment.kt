@@ -1,16 +1,18 @@
 package com.ail.audioextract.views.fragments
 
 import android.Manifest
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.KeyEvent
-import android.view.View
-import android.widget.Toast
+import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,64 +20,83 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ail.audioextract.R
-import com.ail.audioextract.VLRecyclerViewAdapter
+import com.ail.audioextract.RECENT_FOLDER_NAME
 import com.ail.audioextract.VideoAlbumListAdapter
+import com.ail.audioextract.VideoListRecyclerViewAdapter
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.ail.audioextract.VideoSource.VideoFolderinfo
 import com.ail.audioextract.accessmedia.BaseMainViewModel
 import kotlinx.android.synthetic.main.fragment_all_videos.*
-import kotlinx.android.synthetic.main.main_app__toolbar.*
 
 
-class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerViewAdapter.Interaction, VideoAlbumListAdapter.Interaction {
+class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyclerViewAdapter.Interaction, VideoAlbumListAdapter.Interaction {
     private val REQ_PERMISSION = 200
 
-    //    val adapter = VideoListRecyclerViewAdapter(this)
-    val adapter = VLRecyclerViewAdapter(this)
-    val videoAlbumListAdapter = VideoAlbumListAdapter(this)
-    lateinit var builder: AlertDialog.Builder
+    private val videoListRecyclerViewAdapter = VideoListRecyclerViewAdapter(this)
+    private val videoAlbumListAdapter = VideoAlbumListAdapter(this)
+    lateinit var alertDialogBuilder: AlertDialog.Builder
+    val REQ_PICK_VIDEO = 100
 
-    lateinit var viewModel: BaseMainViewModel
+    var videoPath = ""
+    lateinit var appBaseViewModel: BaseMainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BaseMainViewModel::class.java)
+        appBaseViewModel = ViewModelProvider(this).get(BaseMainViewModel::class.java)
         if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
-            viewModel.queryListVideosFromBucket(requireContext(), null)
+            appBaseViewModel.queryListVideosFromBucket(requireContext(), null)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        builder = AlertDialog.Builder(requireContext())
-        rv_videosList.adapter = adapter
+        alertDialogBuilder = AlertDialog.Builder(requireContext())
+        setHasOptionsMenu(true)
+        val activity = activity as AppCompatActivity?
+
+        activity?.setSupportActionBar(toolbar)
+
+        activity?.supportActionBar?.title = ""
+//        (getActivity() as AppCompatActivity).getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
+
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
+
+        toolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+
+        }
+
+        /* VIDEO LIST  RecyclerViewAdapter */
+
+        rv_videosList.adapter = videoListRecyclerViewAdapter
         rv_videosList.layoutManager = GridLayoutManager(requireContext(), 3)
 
 
+        /* Video  List RecyclerViewAdapter */
+
         rv_videosAlbum.adapter = videoAlbumListAdapter
         rv_videosAlbum.layoutManager = LinearLayoutManager(requireContext())
-        home.setOnClickListener {
 
-            showOrHideAlbumList()
-        }
+
         if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
-            viewModel.getInternalStorageDataWithCursor(requireContext())?.observe(viewLifecycleOwner, Observer {
+            appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
                 if (!it.isNullOrEmpty()) {
                     videoAlbumListAdapter.submitList(it)
-                    showOrHIdeAlbumItem.text = "All Videos"
+                    showOrHIdeAlbumItem.text = RECENT_FOLDER_NAME
                 }
             })
 
-            viewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
-                builder.setView(R.layout.progress_dialog)
-                val dialog: Dialog = builder.create()
+            appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
+                alertDialogBuilder.setView(R.layout.progress_dialog)
+                val dialog: Dialog = alertDialogBuilder.create()
                 dialog.show()
-
-                adapter.submitList(it as List<VideoFileInfo>)
+                videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
                 dialog.dismiss()
 
-
             })
+            showAlbum.setOnClickListener {
+                showOrHideAlbumList()
+            }
         }
 
 
@@ -93,8 +114,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
     override fun onStart() {
         super.onStart()
 
-        ActivityCompat.requestPermissions(
-                requireActivity(),
+        requestPermissions(
                 arrayOf(
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -108,20 +128,20 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
             permissions: Array<out String>,
             grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == REQ_PERMISSION && grantResults.firstOrNull() != PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == REQ_PERMISSION /*&& grantResults[0] != PackageManager.PERMISSION_GRANTED*/) {
+            /*     alertDialogBuilder.setView(R.layout.progress_dialog)
+                 val dialog: Dialog = alertDialogBuilder.create()
+                 dialog.show()*/
 
-            viewModel.queryListVideosFromBucket(requireContext(), null)?.observe(viewLifecycleOwner, Observer {
-                builder.setView(R.layout.progress_dialog)
-                val dialog: Dialog = builder.create()
-                dialog.show()
+            appBaseViewModel.queryListVideosFromBucket(requireContext(), null).observe(viewLifecycleOwner, Observer {
 
-                adapter.submitList(it as List<VideoFileInfo>)
-                dialog.dismiss()
 
+                videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
+    //                dialog.dismiss()
 
             })
+
 
         }
     }
@@ -129,8 +149,8 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
 
     override fun onItemSelected(position: Int, item: VideoFolderinfo) {
         if (item.bucket_id != null) {
-            viewModel.queryListVideosFromBucket(requireContext(), arrayOf(item.bucket_id)).observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it as List<VideoFileInfo>)
+            appBaseViewModel.queryListVideosFromBucket(requireContext(), arrayOf(item.bucket_id)).observe(viewLifecycleOwner, Observer {
+                videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
             })
         } else {
             /*if bucketId is null then show all videos--->All Videos item Clicked */
@@ -152,16 +172,30 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
     }
 
     private fun showAllVideosList() {
-        viewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it as List<VideoFileInfo>)
+        appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
+            videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
         })
     }
 
 
     override fun onItemSelected(position: Int, item: VideoFileInfo) {
+        sendToTrimFragment(item.file_path)
+    }
+
+    override fun noSearchItemFound(noResultFound: Boolean) {
+        if (noResultFound) {
+            noItemFound.visibility = View.VISIBLE
+            rv_videosList.visibility = View.GONE
+        } else {
+            noItemFound.visibility = View.GONE
+            rv_videosList.visibility = View.VISIBLE
+        }
+    }
+
+    private fun sendToTrimFragment(item: String) {
         val action =
                 AllVideosFragmentDirections.actionAllVideosFragmentToTrimFragment(
-                        videoToTrim = item.file_path)
+                        videoToTrim = item)
         Navigation.findNavController(requireView()).navigate(action)
     }
 
@@ -184,6 +218,91 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VLRecyclerView
                     false
                 }
             } else false
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home_menu, menu)
+        var menuItem = menu.findItem(R.id.action_search_video)
+
+        var searchView: SearchView = menuItem.actionView as SearchView
+        searchView.setOnCloseListener {
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
+            false
+        }
+        searchView.setOnSearchClickListener {
+            toolbar.navigationIcon = null
+            if (rv_videosAlbum.visibility == View.VISIBLE) {
+                rv_videosAlbum.visibility = View.GONE
+            }
+        }
+
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    videoListRecyclerViewAdapter.filter.filter(newText)
+                }
+                return false
+            }
+        })
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.pickVideo) {
+
+            Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+                    .apply {
+                        type = "video/*"
+                    }
+                    .also {
+
+                        startActivityForResult(it, REQ_PICK_VIDEO)
+                    }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQ_PICK_VIDEO -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    videoPath = getRealPathFromMediaData(data?.data)
+                    if (videoPath != "") {
+                        sendToTrimFragment(videoPath)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getRealPathFromMediaData(data: Uri?): String {
+        data ?: return ""
+
+        var cursor: Cursor? = null
+        try {
+            cursor = requireContext().contentResolver.query(
+                    data,
+                    arrayOf(MediaStore.Video.Media.DATA),
+                    null, null, null
+            )
+
+            val col = cursor!!.getColumnIndex(MediaStore.Video.Media.DATA)
+            cursor.moveToFirst()
+
+            return cursor.getString(col)
+        } finally {
+            cursor?.close()
         }
     }
 

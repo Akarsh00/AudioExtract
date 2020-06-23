@@ -13,9 +13,6 @@
         <action
             android:id="@+id/action_allVideosFragment_to_trimFragment"
             app:destination="@id/trimFragment" />
-        <action
-            android:id="@+id/action_allVideosFragment_to_savedAudioListFragments"
-            app:destination="@id/savedAudioListFragments" />
     </fragment>
     <fragment
         android:id="@+id/finalSavedFragment"
@@ -43,5 +40,12 @@
         android:id="@+id/savedAudioListFragments"
         android:name="com.ail.audioextract.views.fragments.SavedAudioListFragments"
         android:label="fragment_saved_audio_list_fragments"
-        tools:layout="@layout/fragment_saved_audio_list_fragments" />
+        tools:layout="@layout/fragment_saved_audio_list_fragments" >
+        <action
+            android:id="@+id/action_savedAudioListFragments_to_allVideosFragment"
+            app:destination="@id/allVideosFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/trimFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

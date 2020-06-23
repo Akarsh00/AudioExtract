@@ -75,6 +75,7 @@ class VideoAlbumListAdapter(private val interaction: Interaction? = null) :
 
             }
 
+            numOfVideos.text=item.fileCount.toString()
         }
     }
 

@@ -84,7 +84,6 @@ public class BaseFile implements Serializable {
         @Override
         public int hashCode() {
             int hashcode = (int) ((37 * size) + ((width + height) ^ 21) + (bitrate + duration) ^ 13);
-//            Log.d("hashCode = ", hashcode + "");
             return hashcode;
         }
 

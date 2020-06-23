@@ -1,8 +1,5 @@
 package com.ail.audioextract.views.fragments
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,11 +11,9 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ail.audioextract.AudioListRecyclerViewAdapter
 import com.ail.audioextract.R
-import com.ail.audioextract.Track_Bean
-import com.ail.audioextract.getAllSdCardTrack_Beans
-import idv.luchafang.videotrimmerexample.playAudioIntent
+import com.ail.audioextract.AudioTrackBean
+import com.ail.audioextract.getAllSdCardTrackBeans
 import kotlinx.android.synthetic.main.fragment_saved_audio_list_fragments.*
-import java.io.File
 
 
 class SavedAudioListFragments : Fragment(), AudioListRecyclerViewAdapter.Interaction {
@@ -28,13 +23,12 @@ class SavedAudioListFragments : Fragment(), AudioListRecyclerViewAdapter.Interac
         val adapter = AudioListRecyclerViewAdapter(this)
         rv_audioListRecyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         rv_audioListRecyclerView.adapter = adapter
-        getAllSdCardTrack_Beans(requireContext())?.let { adapter.submitList(it) }
+        getAllSdCardTrackBeans(requireContext())?.let { adapter.submitList(it.reversed()) }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_saved_audio_list_fragments, container, false)
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -48,12 +42,11 @@ class SavedAudioListFragments : Fragment(), AudioListRecyclerViewAdapter.Interac
         return view
     }
 
-    override fun onItemSelected(position: Int, item: Track_Bean) {
+    override fun onItemSelected(position: Int, item: AudioTrackBean) {
 
-        playAudioIntent(requireContext(),item.mPath)
+        Navigation.findNavController(requireView()).navigate(R.id.action_savedAudioListFragments_to_allVideosFragment)
+//        playAudioIntent(requireContext(),item.mPath)
     }
-
-
 
 
 }

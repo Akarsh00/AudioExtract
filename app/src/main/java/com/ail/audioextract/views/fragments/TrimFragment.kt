@@ -99,18 +99,13 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
             it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
         audioFormatSpinner.adapter = audioFormatArrayAdapter
-        audioFormatSpinner.onItemSelectedListener = this;
-
-
-
+        audioFormatSpinner.onItemSelectedListener = this
 
         fetchAudioFromSelectedPosition.setOnClickListener {
             extractAudioFiles()
         }
-        /*  fetchVideoFromSelectedPosition.setOnClickListener {
-              fetchMediaFile(false)
-          }
-  */
+
+
         showTrimLayoutButton.setOnClickListener {
             if (videoPath.isNotEmpty())
                 showOnlyTrimLayout()
@@ -168,7 +163,12 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
         }
     }
 
-    private fun resetFileName() = "AUDIO-" + System.currentTimeMillis().toString()
+    private fun resetFileName():String {
+        var name=File(videoPath).name
+        if (name.indexOf(".") > 0)
+            name = name.substring(0, name.lastIndexOf("."))
+        return name + System.currentTimeMillis().toString()
+    }
 
     private fun showOnlyTrimLayout() {
         trimLayout.visibility = View.VISIBLE
@@ -206,7 +206,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
     private fun getDestinationPath(): String {
         val mFinalPath: String
         val folder = Environment.getExternalStorageDirectory()
-        mFinalPath = folder.path + File.separator + "Rocks Audio Saved"
+        mFinalPath = folder.path + File.separator + "SAVED_AUDIO_DIR_NAME"
         if (!File(mFinalPath).exists()) {
             File(mFinalPath).mkdir()
         }

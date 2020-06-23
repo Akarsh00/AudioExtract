@@ -14,7 +14,9 @@
     <EditText
         android:id="@+id/tv_fileName"
         android:layout_width="match_parent"
+        android:textColor=" #555555"
         android:layout_height="wrap_content"
+        android:backgroundTint="#B1ADAD"
        />
 
     <TextView

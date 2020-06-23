@@ -131,7 +131,7 @@ fun playAudioIntent(context: Context, item: String) {
     viewMediaIntent.action = Intent.ACTION_VIEW
     viewMediaIntent.setDataAndType(a, "audio/*")
     viewMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    context.startActivity(viewMediaIntent)
+    context.startActivity(Intent.createChooser(viewMediaIntent, "Open with..."))
 }
 
 fun shareAudioIntent(context: Context, item: String) {
@@ -141,7 +141,7 @@ fun shareAudioIntent(context: Context, item: String) {
     intent.type = "audio/*"
     val builder = VmPolicy.Builder()
     StrictMode.setVmPolicy(builder.build())
-    context.startActivity(Intent.createChooser(intent, "Share Audio Abd Alazez..."))
+    context.startActivity(Intent.createChooser(intent, "Share Audio ..."))
 }
 
  fun setRingtone(context: Context, path: String?) {
@@ -158,7 +158,7 @@ fun shareAudioIntent(context: Context, item: String) {
     contentValues.put(MediaStore.Audio.Media.IS_RINGTONE, true)
     val uri = MediaStore.Audio.Media.getContentUriForPath(path)
     val cursor: Cursor? = context.contentResolver.query(uri, null, MediaStore.MediaColumns.DATA + "=?", arrayOf(path), null)
-    if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+    if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
         val id: String = cursor.getString(0)
         contentValues.put(MediaStore.Audio.Media.IS_RINGTONE, true)
         context.contentResolver.update(uri, contentValues, MediaStore.MediaColumns.DATA + "=?", arrayOf(path))
@@ -171,4 +171,16 @@ fun shareAudioIntent(context: Context, item: String) {
         }
         cursor.close()
     }
+}
+
+fun getCountOfVideo(files: Array<File>?): Long {
+    var y = 0
+    if (files != null) {
+        for (x in files.indices) {
+            if (files[x].length() > 0) {
+                y = y + 1
+            }
+        }
+    }
+    return y.toLong()
 }

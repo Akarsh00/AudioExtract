@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.audio_single_item.view.*
 class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Track_Bean>() {
+    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AudioTrackBean>() {
 
-        override fun areItemsTheSame(oldItem: Track_Bean, newItem: Track_Bean): Boolean {
+        override fun areItemsTheSame(oldItem: AudioTrackBean, newItem: AudioTrackBean): Boolean {
             return false
         }
 
-        override fun areContentsTheSame(oldItem: Track_Bean, newItem: Track_Bean): Boolean {
+        override fun areContentsTheSame(oldItem: AudioTrackBean, newItem: AudioTrackBean): Boolean {
             return false
         }
 
@@ -49,7 +49,7 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
         return differ.currentList.size
     }
 
-    fun submitList(list: List<Track_Bean>) {
+    fun submitList(list: List<AudioTrackBean>) {
         differ.submitList(list)
     }
 
@@ -59,7 +59,7 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
             private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: Track_Bean) = with(itemView) {
+        fun bind(item: AudioTrackBean) = with(itemView) {
             tv_title.text=item.mTitle
             tv_Size.text=item.mDuration
             tv_duration.text=findFileSizeFromPath(item.mPath)
@@ -70,7 +70,7 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
     }
 
     interface Interaction {
-        fun onItemSelected(position: Int, item: Track_Bean)
+        fun onItemSelected(position: Int, item: AudioTrackBean)
     }
 
 
