@@ -13,6 +13,7 @@ import com.ail.audioextract.AudioListRecyclerViewAdapter
 import com.ail.audioextract.R
 import com.ail.audioextract.AudioTrackBean
 import com.ail.audioextract.getAllSdCardTrackBeans
+import idv.luchafang.videotrimmerexample.playAudioIntent
 import kotlinx.android.synthetic.main.fragment_saved_audio_list_fragments.*
 
 
@@ -45,7 +46,7 @@ class SavedAudioListFragments : Fragment(), AudioListRecyclerViewAdapter.Interac
     override fun onItemSelected(position: Int, item: AudioTrackBean) {
 
 //        Navigation.findNavController(requireView()).navigate(R.id.action_savedAudioListFragments_to_allVideosFragment)
-//        playAudioIntent(requireContext(),item.mPath)
+        playAudioIntent(requireContext(),item.mPath)
     }
 
 

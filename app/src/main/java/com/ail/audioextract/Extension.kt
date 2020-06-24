@@ -1,10 +1,8 @@
 package idv.luchafang.videotrimmerexample
 
-import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
@@ -13,7 +11,6 @@ import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import android.provider.MediaStore
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.net.toUri
 import java.io.File
 import java.text.SimpleDateFormat
@@ -145,33 +142,26 @@ fun shareAudioIntent(context: Context, item: String) {
 }
 
  fun setRingtone(context: Context, path: String?) {
-    if (path == null) {
-        return
-    }
-    val file = File(path)
-    val contentValues = ContentValues()
-    contentValues.put(MediaStore.MediaColumns.DATA, file.absolutePath)
-    val filterName = path.substring(path.lastIndexOf("/") + 1)
-    contentValues.put(MediaStore.MediaColumns.TITLE, filterName)
-    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-    contentValues.put(MediaStore.MediaColumns.SIZE, file.length())
-    contentValues.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-    val uri = MediaStore.Audio.Media.getContentUriForPath(path)
-    val cursor: Cursor? = context.contentResolver.query(uri, null, MediaStore.MediaColumns.DATA + "=?", arrayOf(path), null)
-    if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
-        val id: String = cursor.getString(0)
-        contentValues.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-        context.contentResolver.update(uri, contentValues, MediaStore.MediaColumns.DATA + "=?", arrayOf(path))
-        val newuri = ContentUris.withAppendedId(uri, java.lang.Long.valueOf(id))
-        try {
-            RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newuri)
-            Toast.makeText(context, "Set as Ringtone Successfully.", Toast.LENGTH_SHORT).show()
-        } catch (t: Throwable) {
-            t.printStackTrace()
-        }
-        cursor.close()
-    }
-}
+     var ringFile=File(path)
+     val values = ContentValues()
+     values.put(MediaStore.MediaColumns.DATA, ringFile.absolutePath)
+     values.put(MediaStore.MediaColumns.TITLE, "ring")
+     values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+     values.put(MediaStore.MediaColumns.SIZE, ringFile.length())
+     values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+     values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true)
+     values.put(MediaStore.Audio.Media.IS_ALARM, true)
+     values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+
+     val uri = MediaStore.Audio.Media.getContentUriForPath(ringFile.absolutePath)
+     val newUri: Uri? = context.contentResolver.insert(uri, values)
+
+     try {
+         RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
+     } catch (t: Throwable) {
+     }
+
+ }
 
 fun getCountOfVideo(files: Array<File>?): Long {
     var y = 0

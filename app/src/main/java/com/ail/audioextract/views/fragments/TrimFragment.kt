@@ -106,7 +106,6 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
             extractAudioFiles()
         }
 
-
         showTrimLayoutButton.setOnClickListener {
             if (videoPath.isNotEmpty())
                 showOnlyTrimLayout()

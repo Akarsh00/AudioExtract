@@ -42,13 +42,13 @@ class FinalSavedFragment : Fragment(R.layout.fragment_final_saved) {
         }
 
         openWith.setOnClickListener {
-            audioPath?.let { it1 -> playAudioIntent(requireContext(), it1) }
+            audioPath?.let { it -> playAudioIntent(requireContext(), it) }
         }
         shareWith.setOnClickListener {
-            audioPath?.let { it1 -> shareAudioIntent(requireContext(), it1) }
+            audioPath?.let { it -> shareAudioIntent(requireContext(), it) }
         }
         setCallerTune.setOnClickListener {
-            audioPath?.let { it1 -> setRingtone(requireContext(), it1) }
+            audioPath?.let { it -> setRingtone(requireContext(), it) }
         }
 
         player = SimpleExoPlayer.Builder(requireContext()).build().also {

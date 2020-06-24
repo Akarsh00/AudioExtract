@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.ail.audioextract.R
 import com.ail.audioextract.accessmedia.BaseMainViewModel
 
-class AudioConverterMainActivity : AppCompatActivity() {
+class HomeAppActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
