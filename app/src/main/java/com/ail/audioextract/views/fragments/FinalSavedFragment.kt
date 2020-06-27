@@ -6,19 +6,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.ail.audioextract.R
+import com.ail.audioextract.playAudioIntent
+import com.ail.audioextract.setRingtone
+import com.ail.audioextract.shareAudioIntent
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ClippingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import idv.luchafang.videotrimmerexample.playAudioIntent
-import idv.luchafang.videotrimmerexample.setRingtone
-import idv.luchafang.videotrimmerexample.shareAudioIntent
 import idv.luchafang.videotrimmerexample.uriExtractorFromPath
 import kotlinx.android.synthetic.main.final_activity_toolbar.*
 import kotlinx.android.synthetic.main.fragment_final_saved.*
 import kotlinx.android.synthetic.main.fragment_final_saved.playerView
-import kotlinx.android.synthetic.main.fragment_trim.*
 import java.io.File
 
 class FinalSavedFragment : Fragment(R.layout.fragment_final_saved) {
@@ -34,21 +32,25 @@ class FinalSavedFragment : Fragment(R.layout.fragment_final_saved) {
         if (audioPath != null) {
             updateLayouts(audioPath)
         }
+
         home.setOnClickListener {
             Navigation.findNavController(requireView()).navigate(R.id.action_finalSavedFragment_to_savedAudioListFragments)
         }
+
         btn_cancel.setOnClickListener {
             Navigation.findNavController(requireView()).navigateUp()
         }
 
         openWith.setOnClickListener {
-            audioPath?.let { it -> playAudioIntent(requireContext(), it) }
+            audioPath?.let { playAudioIntent(requireContext(), it) }
         }
+
         shareWith.setOnClickListener {
-            audioPath?.let { it -> shareAudioIntent(requireContext(), it) }
+            audioPath?.let { shareAudioIntent(requireContext(), it) }
         }
+
         setCallerTune.setOnClickListener {
-            audioPath?.let { it -> setRingtone(requireContext(), it) }
+            audioPath?.let { setRingtone(requireContext(), it) }
         }
 
         player = SimpleExoPlayer.Builder(requireContext()).build().also {
@@ -73,10 +75,10 @@ class FinalSavedFragment : Fragment(R.layout.fragment_final_saved) {
             val fileSizeInKB = fileSizeInBytes / 1024
             val fileSizeInMB = fileSizeInKB / 1024
             if (fileSizeInMB > 1) {
-                tv_Size.text = fileSizeInMB.toString() + " mb"
+                tv_Size.text = "$fileSizeInMB mb"
 
             } else {
-                tv_Size.text = fileSizeInKB.toString() + " kb"
+                tv_Size.text = "$fileSizeInKB kb"
 
             }
 
@@ -85,19 +87,17 @@ class FinalSavedFragment : Fragment(R.layout.fragment_final_saved) {
 
     private fun playAudio(path: String) {
         if (path.isBlank()) return
-        var buildUriFromSource = path.uriExtractorFromPath()
         val source = ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(
-                        buildUriFromSource
+                        path.uriExtractorFromPath()
                 )
-//        player.playWhenReady = true
         player.playWhenReady = false
         player.prepare(source)
-
-        playerView.setShutterBackgroundColor(ContextCompat.getColor(requireContext(),R.color.semi_white))
+        playerView.setShutterBackgroundColor(ContextCompat.getColor(requireContext(), R.color.semi_white))
         playerView.player = player
         playerView.requestFocus()
     }
+
     private fun pausePlayer() {
         player.playWhenReady = false
         player.playbackState

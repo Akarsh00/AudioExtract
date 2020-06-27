@@ -8,7 +8,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.bumptech.glide.Glide
-import idv.luchafang.videotrimmerexample.getFile_duration_inDetail
+import idv.luchafang.videotrimmerexample.getFileDurationInDetails
 import kotlinx.android.synthetic.main.video_single_item.view.*
 
 class VideoListRecyclerViewAdapter(private val interaction: VideoListRecyclerViewAdapter.Interaction? = null) : RecyclerView.Adapter<VideoListRecyclerViewAdapter.VideoItemHolder>(), Filterable {
@@ -26,7 +26,7 @@ class VideoListRecyclerViewAdapter(private val interaction: VideoListRecyclerVie
             tv_title.text = item.file_name
             if (item.duration!=null)
             {
-                tv_VideoTime.text = item.duration.toInt().getFile_duration_inDetail()
+                tv_VideoTime.text = item.duration.toInt().getFileDurationInDetails()
 
             }
 

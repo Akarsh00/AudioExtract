@@ -13,6 +13,12 @@
         <action
             android:id="@+id/action_allVideosFragment_to_trimFragment"
             app:destination="@id/trimFragment" />
+        <action
+            android:id="@+id/action_allVideosFragment_to_videoTrimFragment"
+            app:destination="@id/videoTrimFragment" />
+        <argument
+            android:name="eventType"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/finalSavedFragment"
@@ -28,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/trimFragment"
-        android:name="com.ail.audioextract.views.fragments.TrimFragment"
+        android:name="com.ail.audioextract.views.fragments.TrimVideoForAudioFragment"
         android:label="fragment_trim"
         tools:layout="@layout/fragment_trim" >
         <action
@@ -55,5 +61,13 @@
         <action
             android:id="@+id/action_homeFragment_to_allVideosFragment"
             app:destination="@id/allVideosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoTrimFragment"
+        android:name="com.ail.audioextract.views.fragments.VideoTrimFragment"
+        android:label="VideoTrimFragment" >
+        <argument
+            android:name="videoToTrim"
+            app:argType="string" />
     </fragment>
 </navigation>

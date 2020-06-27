@@ -1,20 +1,14 @@
 package com.ail.audioextract.views.fragments
 
 import android.Manifest
-import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -23,9 +17,8 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.ail.audioextract.AudioExtractor
 import com.ail.audioextract.R
-import com.ail.audioextract.SAVED_AUDIO_DIR_NAME
+import com.ail.audioextract.SAVED_EDITED_MEDIA
 import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ClippingMediaSource
@@ -35,7 +28,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import idv.luchafang.videotrimmer.VideoTrimmerView
 import idv.luchafang.videotrimmerexample.getVideoFileDuration
 import idv.luchafang.videotrimmerexample.setTime
-import idv.luchafang.videotrimmerexample.setTimeVideo
+import idv.luchafang.videotrimmerexample.setVideoTime
 import idv.luchafang.videotrimmerexample.uriExtractorFromPath
 import kotlinx.android.synthetic.main.base_options_layout.*
 import kotlinx.android.synthetic.main.fragment_trim.*
@@ -47,23 +40,18 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 
-class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelectedRangeChangedListener,
+class TrimVideoForAudioFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelectedRangeChangedListener,
         AdapterView.OnItemSelectedListener {
 
     private val REQ_PERMISSION = 200
     private val allOutputAudioFileForamts =
             arrayOf("MP3", "AAC")
-
     private var mTrimStartingPosition: Long = 0
     private var mTrimEndPosition: Long = 0
     private var mOutputAudioFileFormat = "mp3"
-    var fragC=false
-
     lateinit var builder: AlertDialog.Builder
     var outputFilePath = ""
-
     lateinit var  player: SimpleExoPlayer
-
     lateinit var dataSourceFactory: DataSource.Factory
 
 
@@ -82,7 +70,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
 
 
 
-        videoPath = arguments?.let { TrimFragmentArgs.fromBundle(it).videoToTrim }.toString()
+        videoPath = arguments?.let { TrimVideoForAudioFragmentArgs.fromBundle(it).videoToTrim }.toString()
     if (!videoPath.equals("")) {
         displayTrimmerView(videoPath)
 
@@ -114,6 +102,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
                         .show()
             }
         }
+
 
         iv_trimLayoutDone.setOnClickListener {
             /* Base Layout is view below video player where all options are given */
@@ -150,7 +139,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
                     tv_fileName.setText(resetFileName())
 
                     val action =
-                            TrimFragmentDirections.actionTrimFragmentToFinalSavedFragment(
+                            TrimVideoForAudioFragmentDirections.actionTrimFragmentToFinalSavedFragment(
                                     outputFilePath
                             )
                     findNavController(requireParentFragment()).navigate(action)
@@ -208,7 +197,7 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
     private fun getDestinationPath(): String {
         val mFinalPath: String
         val folder = Environment.getExternalStorageDirectory()
-        mFinalPath = folder.path + File.separator +/* "SAVED_AUDIO_DIR_NAME"*/SAVED_AUDIO_DIR_NAME
+        mFinalPath = folder.path + File.separator +/* "SAVED_AUDIO_DIR_NAME"*/SAVED_EDITED_MEDIA
         if (!File(mFinalPath).exists()) {
             File(mFinalPath).mkdir()
         }
@@ -293,8 +282,8 @@ class TrimFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelect
         mTrimEndPosition = endMillis
         val duration = (endMillis - startMillis)
 
-        tv_StartSeek.setTimeVideo(startMillis.toInt())
-        tv_EndSeek.setTimeVideo(endMillis.toInt())
+        tv_StartSeek.setVideoTime(startMillis.toInt())
+        tv_EndSeek.setVideoTime(endMillis.toInt())
         durationView.setTime(duration.toInt())
 
     }

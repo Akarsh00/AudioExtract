@@ -78,10 +78,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     /*Lifecycles only (without ViewModel or LiveData)*/
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-
     //material design library
     implementation 'com.google.android.material:material:1.1.0'
-
+    //transcoder
+    implementation 'com.otaliastudios:transcoder:0.9.1'
 }
 repositories {
     mavenCentral()

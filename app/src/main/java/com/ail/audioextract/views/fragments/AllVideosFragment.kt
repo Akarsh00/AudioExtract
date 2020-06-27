@@ -26,6 +26,8 @@ import com.ail.audioextract.VideoListRecyclerViewAdapter
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.ail.audioextract.VideoSource.VideoFolderinfo
 import com.ail.audioextract.accessmedia.BaseMainViewModel
+import com.ail.audioextract.data.ITEMS
+import com.ail.audioextract.views.activity.HomeAppActivity
 import kotlinx.android.synthetic.main.fragment_all_videos.*
 
 
@@ -38,20 +40,19 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
     val REQ_PICK_VIDEO = 100
 
     var videoPath = ""
-    lateinit var appBaseViewModel: BaseMainViewModel
+    var eventType = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appBaseViewModel = ViewModelProvider(this).get(BaseMainViewModel::class.java)
-        if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
-            appBaseViewModel.queryListVideosFromBucket(requireContext(), null)
-        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         alertDialogBuilder = AlertDialog.Builder(requireContext())
         setHasOptionsMenu(true)
+        eventType = arguments?.let { AllVideosFragmentArgs.fromBundle(it).eventType }.toString()
+
         val activity = activity as AppCompatActivity?
 
         activity?.setSupportActionBar(toolbar)
@@ -79,14 +80,14 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
 
 
         if (checkStoragePermissionGrantedOrNot() == PackageManager.PERMISSION_GRANTED) {
-            appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
+            (activity as HomeAppActivity).appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
                 if (!it.isNullOrEmpty()) {
                     videoAlbumListAdapter.submitList(it)
                     showOrHIdeAlbumItem.text = RECENT_FOLDER_NAME
                 }
             })
 
-            appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
+            (activity as HomeAppActivity).appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
                 alertDialogBuilder.setView(R.layout.progress_dialog)
                 val dialog: Dialog = alertDialogBuilder.create()
                 dialog.show()
@@ -134,12 +135,12 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
                  val dialog: Dialog = alertDialogBuilder.create()
                  dialog.show()*/
 
-            appBaseViewModel.queryListVideosFromBucket(requireContext(), null).observe(viewLifecycleOwner, Observer {
+            (activity as HomeAppActivity).appBaseViewModel.queryListVideosFromBucket(requireContext(), null).observe(viewLifecycleOwner, Observer {
 
 
                 videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
-                appBaseViewModel.queryListVideosFromBucket(requireContext(), null)
-                appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
+                (activity as HomeAppActivity).appBaseViewModel.queryListVideosFromBucket(requireContext(), null)
+                (activity as HomeAppActivity).appBaseViewModel.getInternalStorageDataWithCursor(requireContext()).observe(viewLifecycleOwner, Observer {
                     if (!it.isNullOrEmpty()) {
                         videoAlbumListAdapter.submitList(it)
                         showOrHIdeAlbumItem.text = RECENT_FOLDER_NAME
@@ -156,7 +157,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
 
     override fun onItemSelected(position: Int, item: VideoFolderinfo) {
         if (item.bucket_id != null) {
-            appBaseViewModel.queryListVideosFromBucket(requireContext(), arrayOf(item.bucket_id)).observe(viewLifecycleOwner, Observer {
+            (activity as HomeAppActivity).appBaseViewModel.queryListVideosFromBucket(requireContext(), arrayOf(item.bucket_id)).observe(viewLifecycleOwner, Observer {
                 videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
             })
         } else {
@@ -179,7 +180,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
     }
 
     private fun showAllVideosList() {
-        appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
+        (activity as HomeAppActivity).appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
             videoListRecyclerViewAdapter.submitList(it as List<VideoFileInfo>)
         })
     }
@@ -200,10 +201,21 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
     }
 
     private fun sendToTrimFragment(item: String) {
+        if (eventType==ITEMS.VIDEO_TO_AUDIO.events)
+        {
         val action =
                 AllVideosFragmentDirections.actionAllVideosFragmentToTrimFragment(
                         videoToTrim = item)
         Navigation.findNavController(requireView()).navigate(action)
+        }
+        else if(eventType==ITEMS.VIDEO_TRIM.events)
+        {
+            val action =
+                    AllVideosFragmentDirections.actionAllVideosFragmentToVideoTrimFragment(
+                            videoToTrim = item)
+            Navigation.findNavController(requireView()).navigate(action)
+
+        }
     }
 
     override fun onResume() {

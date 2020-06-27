@@ -1,6 +1,5 @@
 package com.ail.audioextract
 
-import android.R.attr.path
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
@@ -13,8 +12,7 @@ import java.io.File
  */
 
 fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
-   var path= SAVED_AUDIO_DIR_NAME
-    val Track_Beans: ArrayList<AudioTrackBean> = ArrayList<AudioTrackBean>()
+    val Track_Beans: ArrayList<AudioTrackBean> = ArrayList()
     val c: Cursor? = context
             .contentResolver
             .query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Audio.Media._ID,
@@ -24,7 +22,7 @@ fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
                     MediaStore.Audio.Media.DURATION,
                     MediaStore.Audio.Media.DISPLAY_NAME,
                     MediaStore.Audio.Media.ALBUM_ID),
-                    MediaStore.Audio.Media.DATA + " like ? ",  arrayOf("%Rocks Audio Saved%"), null)
+                    MediaStore.Audio.Media.DATA + " like ? ", arrayOf("%$SAVED_EDITED_MEDIA%"), null)
 
     if (c != null) {
         if (c.moveToFirst()) {
@@ -44,9 +42,7 @@ fun getAllSdCardTrackBeans(context: Context): List<AudioTrackBean>? {
                 val mFormattedDuration = DateUtils
                         .formatElapsedTime(mDuration / 1000)
                 mTcBean.mDuration = mFormattedDuration
-//                if (mTcBean.mPath.contains(SAVED_AUDIO_DIR_NAME)) {
-                    Track_Beans.add(mTcBean)
-//                }
+                Track_Beans.add(mTcBean)
             } while (c.moveToNext())
             c.close()
         }
@@ -61,19 +57,19 @@ data class AudioTrackBean(var mTitle: String = "", var mPath: String = "", var m
 
 
 fun findFileSizeFromPath(path: String): String {
-    var file = File(path)
-    if (file.exists()) {
+    val file = File(path)
+    return if (file.exists()) {
         val fileSizeInBytes = file.length()
         val fileSizeInKB = fileSizeInBytes / 1024
         val fileSizeInMB = fileSizeInKB / 1024
         if (fileSizeInMB > 1) {
-            return "$fileSizeInMB mB"
+            "$fileSizeInMB mB"
         } else {
-            return "$fileSizeInKB kB"
+            "$fileSizeInKB kB"
         }
 
     } else {
-        return ""
+        ""
     }
 }
 

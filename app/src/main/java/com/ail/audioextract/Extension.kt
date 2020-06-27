@@ -23,7 +23,7 @@ fun File.getVideoFileDuration(context: Context): Long =
                 .duration.toLong()
 
 
-fun TextView.setTimeVideo(position: Int) {
+fun TextView.setVideoTime(position: Int) {
     val seconds = "" /*sec*/
     this.text = java.lang.String.format("%s %s", position.getTimeStringFromInt(), seconds)
 }
@@ -61,26 +61,7 @@ fun getAndroidMoviesFolder(): File? {
 fun String.uriExtractorFromPath() = Uri.Builder().path(this).build()
 
 
-suspend fun File.getMediaDuration(context: Context): String {
-
-    val duration =
-            MediaPlayer.create(context, this.absolutePath.toUri())
-                    .duration.toLong()
-    var x = duration
-    var lengthOfVideo = String.format(
-            "%02d:%02d",
-            TimeUnit.MILLISECONDS.toMinutes(x),
-            TimeUnit.MILLISECONDS.toSeconds(x) -
-                    TimeUnit.MINUTES.toSeconds(
-                            TimeUnit.MILLISECONDS.toMinutes(
-                                    x
-                            )
-                    ))
-
-    return lengthOfVideo
-}
-
-fun Int.getFile_duration_inDetail(): String? {
+fun Int.getFileDurationInDetails(): String? {
     var duration: Long = this.toLong()
     if (duration < 1) {
         return ""
@@ -118,59 +99,4 @@ fun Int.getFile_duration_inDetail(): String? {
         } else "0:$sec"
     }
     return ""
-}
-
-fun playAudioIntent(context: Context, item: String) {
-    val name: String = item
-    val a = Uri.parse(name)
-
-    val viewMediaIntent = Intent()
-    viewMediaIntent.action = Intent.ACTION_VIEW
-    viewMediaIntent.setDataAndType(a, "audio/*")
-    viewMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    context.startActivity(Intent.createChooser(viewMediaIntent, "Open with..."))
-}
-
-fun shareAudioIntent(context: Context, item: String) {
-    val intent = Intent()
-    intent.action = Intent.ACTION_SEND
-    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(File(item)))
-    intent.type = "audio/*"
-    val builder = VmPolicy.Builder()
-    StrictMode.setVmPolicy(builder.build())
-    context.startActivity(Intent.createChooser(intent, "Share Audio ..."))
-}
-
- fun setRingtone(context: Context, path: String?) {
-     var ringFile=File(path)
-     val values = ContentValues()
-     values.put(MediaStore.MediaColumns.DATA, ringFile.absolutePath)
-     values.put(MediaStore.MediaColumns.TITLE, "ring")
-     values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-     values.put(MediaStore.MediaColumns.SIZE, ringFile.length())
-     values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-     values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true)
-     values.put(MediaStore.Audio.Media.IS_ALARM, true)
-     values.put(MediaStore.Audio.Media.IS_MUSIC, false)
-
-     val uri = MediaStore.Audio.Media.getContentUriForPath(ringFile.absolutePath)
-     val newUri: Uri? = context.contentResolver.insert(uri, values)
-
-     try {
-         RingtoneManager.setActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE, newUri)
-     } catch (t: Throwable) {
-     }
-
- }
-
-fun getCountOfVideo(files: Array<File>?): Long {
-    var y = 0
-    if (files != null) {
-        for (x in files.indices) {
-            if (files[x].length() > 0) {
-                y = y + 1
-            }
-        }
-    }
-    return y.toLong()
 }
