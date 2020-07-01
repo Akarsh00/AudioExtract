@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,13 +24,12 @@ import com.ail.audioextract.VideoAlbumListAdapter
 import com.ail.audioextract.VideoListRecyclerViewAdapter
 import com.ail.audioextract.VideoSource.VideoFileInfo
 import com.ail.audioextract.VideoSource.VideoFolderinfo
-import com.ail.audioextract.accessmedia.BaseMainViewModel
 import com.ail.audioextract.data.ITEMS
 import com.ail.audioextract.views.activity.HomeAppActivity
 import kotlinx.android.synthetic.main.fragment_all_videos.*
 
 
-class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyclerViewAdapter.Interaction, VideoAlbumListAdapter.Interaction {
+class ChooseVideosFragments : Fragment(R.layout.fragment_all_videos), VideoListRecyclerViewAdapter.Interaction, VideoAlbumListAdapter.Interaction {
     private val REQ_PERMISSION = 200
 
     private val videoListRecyclerViewAdapter = VideoListRecyclerViewAdapter(this)
@@ -51,7 +49,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
         super.onActivityCreated(savedInstanceState)
         alertDialogBuilder = AlertDialog.Builder(requireContext())
         setHasOptionsMenu(true)
-        eventType = arguments?.let { AllVideosFragmentArgs.fromBundle(it).eventType }.toString()
+        eventType = arguments?.let { ChooseAudioFragmentsArgs.fromBundle(it).eventType }.toString()
 
         val activity = activity as AppCompatActivity?
 
@@ -87,7 +85,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
                 }
             })
 
-            (activity as HomeAppActivity).appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
+            (activity ).appBaseViewModel.listAllVideos?.observe(viewLifecycleOwner, Observer {
                 alertDialogBuilder.setView(R.layout.progress_dialog)
                 val dialog: Dialog = alertDialogBuilder.create()
                 dialog.show()
@@ -204,14 +202,14 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
         if (eventType==ITEMS.VIDEO_TO_AUDIO.events)
         {
         val action =
-                AllVideosFragmentDirections.actionAllVideosFragmentToTrimFragment(
+                ChooseVideosFragmentsDirections.actionAllVideosFragmentToTrimFragment(
                         videoToTrim = item)
         Navigation.findNavController(requireView()).navigate(action)
         }
         else if(eventType==ITEMS.VIDEO_TRIM.events)
         {
             val action =
-                    AllVideosFragmentDirections.actionAllVideosFragmentToVideoTrimFragment(
+                    ChooseVideosFragmentsDirections.actionAllVideosFragmentToVideoTrimFragment(
                             videoToTrim = item)
             Navigation.findNavController(requireView()).navigate(action)
 
@@ -242,11 +240,11 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_menu, menu)
-        var menuItem = menu.findItem(R.id.action_search_video)
+        var menuItem = menu.findItem(R.id.action_search_media)
 
         var searchView: SearchView = menuItem.actionView as SearchView
 
-        val item = menu.findItem(R.id.pickVideo)
+        val item = menu.findItem(R.id.pickMedia)
 
         searchView.setOnCloseListener {
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
@@ -281,7 +279,7 @@ class AllVideosFragment : Fragment(R.layout.fragment_all_videos), VideoListRecyc
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.pickVideo) {
+        if (item.itemId == R.id.pickMedia) {
 
             Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
                     .apply {

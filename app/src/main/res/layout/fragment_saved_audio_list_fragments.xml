@@ -11,9 +11,11 @@
         android:background="@color/appMainColor"
         app:title="Saved Audios"
         app:titleTextColor="@color/white"
+        android:visibility="gone"
         android:id="@+id/toolbar"/>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
+        tools:listitem="@layout/audio_single_item"
         android:layout_height="wrap_content"
         android:id="@+id/rv_audioListRecyclerView"
         />

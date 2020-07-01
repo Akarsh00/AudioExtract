@@ -31,6 +31,7 @@ import idv.luchafang.videotrimmerexample.setTime
 import idv.luchafang.videotrimmerexample.setVideoTime
 import idv.luchafang.videotrimmerexample.uriExtractorFromPath
 import kotlinx.android.synthetic.main.base_options_layout.*
+import kotlinx.android.synthetic.main.fragment_saved_audio_list_fragments.*
 import kotlinx.android.synthetic.main.fragment_trim.*
 import kotlinx.android.synthetic.main.trim_layout.*
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +41,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 
-class TrimVideoForAudioFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelectedRangeChangedListener,
+class TrimVideoForAudioConverterFragment : Fragment(R.layout.fragment_trim), VideoTrimmerView.OnSelectedRangeChangedListener,
         AdapterView.OnItemSelectedListener {
 
     private val REQ_PERMISSION = 200
@@ -51,34 +52,31 @@ class TrimVideoForAudioFragment : Fragment(R.layout.fragment_trim), VideoTrimmer
     private var mOutputAudioFileFormat = "mp3"
     lateinit var builder: AlertDialog.Builder
     var outputFilePath = ""
-    lateinit var  player: SimpleExoPlayer
+    lateinit var player: SimpleExoPlayer
     lateinit var dataSourceFactory: DataSource.Factory
-
-
 
 
     /*Video Path to trim*/
     private var videoPath: String = ""
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+//        toolbar.visibility = View.VISIBLE
         player = SimpleExoPlayer.Builder(requireContext()).build().also {
-                it.repeatMode = SimpleExoPlayer.REPEAT_MODE_ALL
-                playerView.player = it
-            }
+            it.repeatMode = SimpleExoPlayer.REPEAT_MODE_ALL
+            playerView.player = it
+        }
 
-        dataSourceFactory=  DefaultDataSourceFactory(requireContext(), "VideoTrimmer")
+        dataSourceFactory = DefaultDataSourceFactory(requireContext(), "VideoTrimmer")
 
 
 
-        videoPath = arguments?.let { TrimVideoForAudioFragmentArgs.fromBundle(it).videoToTrim }.toString()
-    if (!videoPath.equals("")) {
-        displayTrimmerView(videoPath)
-
-    }
+        videoPath = arguments?.let { TrimVideoForAudioConverterFragmentArgs.fromBundle(it).videoToTrim }.toString()
+        if (!videoPath.isBlank()) {
+            displayTrimmerView(videoPath)
+        }
         builder = AlertDialog.Builder(requireContext())
         /*tv_fileName is the name of output_audio file */
         tv_fileName.setText(resetFileName())
-
 
         val audioFormatArrayAdapter = ArrayAdapter(
                 requireContext(),
@@ -139,7 +137,7 @@ class TrimVideoForAudioFragment : Fragment(R.layout.fragment_trim), VideoTrimmer
                     tv_fileName.setText(resetFileName())
 
                     val action =
-                            TrimVideoForAudioFragmentDirections.actionTrimFragmentToFinalSavedFragment(
+                            TrimVideoForAudioConverterFragmentDirections.actionTrimFragmentToFinalSavedFragment(
                                     outputFilePath
                             )
                     findNavController(requireParentFragment()).navigate(action)
@@ -153,8 +151,8 @@ class TrimVideoForAudioFragment : Fragment(R.layout.fragment_trim), VideoTrimmer
         }
     }
 
-    private fun resetFileName():String {
-        var name=File(videoPath).name
+    private fun resetFileName(): String {
+        var name = File(videoPath).name
         if (name.indexOf(".") > 0)
             name = name.substring(0, name.lastIndexOf("."))
         return name + System.currentTimeMillis().toString()

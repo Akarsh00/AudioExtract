@@ -1,4 +1,4 @@
-package com.ail.audioextract
+package com.ail.audioextract.adapters
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import com.ail.audioextract.R
+import com.ail.audioextract.mediaaccess.mediaHolders.AudioFolderContent
 import kotlinx.android.synthetic.main.audio_single_item.view.*
 
-class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null) :
+class AudioAlbumAdapter(private val interaction: Interaction? = null) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AudioTrackBean>() {
+    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AudioFolderContent>() {
 
-        override fun areItemsTheSame(oldItem: AudioTrackBean, newItem: AudioTrackBean): Boolean {
-            return false
-        }
-        override fun areContentsTheSame(oldItem: AudioTrackBean, newItem: AudioTrackBean): Boolean {
-            return false
-        }
+        override fun areItemsTheSame(oldItem: AudioFolderContent, newItem: AudioFolderContent): Boolean = oldItem.folderName == newItem.folderName
 
+        override fun areContentsTheSame(oldItem: AudioFolderContent, newItem: AudioFolderContent): Boolean = oldItem.folderName == newItem.folderName
     }
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
@@ -28,7 +26,7 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
 
         return ItemHolder(
                 LayoutInflater.from(parent.context).inflate(
-                        R.layout.audio_single_item,
+                        R.layout.audio_album_single_item,
                         parent,
                         false
                 ),
@@ -48,7 +46,7 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
         return differ.currentList.size
     }
 
-    fun submitList(list: List<AudioTrackBean>) {
+    fun submitList(list: List<AudioFolderContent>) {
         differ.submitList(list)
     }
 
@@ -58,22 +56,17 @@ class AudioListRecyclerViewAdapter(private val interaction: Interaction? = null)
             private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: AudioTrackBean) = with(itemView) {
-            tv_title.text=item.mTitle
-            tv_Size.text=item.mDuration
-            tv_album_count.text=findFileSizeFromPath(item.mPath)
+        fun bind(item: AudioFolderContent) = with(itemView) {
             itemView.setOnClickListener {
-                interaction?.onItemSelected(adapterPosition, item)
+                interaction?.onAlbumSelected(adapterPosition, item)
             }
+            itemView.tv_title.text = item.folderName
+            itemView.tv_album_count.text = item.musicFiles.size.toString()
+            
         }
     }
 
     interface Interaction {
-        fun onItemSelected(position: Int, item: AudioTrackBean)
+        fun onAlbumSelected(position: Int, item: AudioFolderContent)
     }
-
-
-
 }
-
-

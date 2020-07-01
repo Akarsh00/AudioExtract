@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_below="@+id/toolbar"
+    android:layout_margin="4dp"
     android:orientation="vertical"
     android:paddingTop="2dp"
-    android:layout_margin="4dp"
     android:paddingBottom="2dp">
 
     <RelativeLayout
@@ -29,52 +29,27 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@+id/img_thumb"
-            android:text="Audio045960907.mp3"
-            android:maxLines="1"
             android:maxLength="25"
+            android:maxLines="1"
+            android:text="Audio045960907.mp3"
             android:textColor="#555555"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_album_count"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
             android:layout_marginStart="20dp"
-            android:layout_toEndOf="@+id/img_thumb"
-            android:text="4 kB "
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/tv_title"
+            android:text="0"
+            android:layout_marginRight="@dimen/size_10dp"
+            android:textAlignment="viewEnd"
             android:textColor="#ACA9A9"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/devider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_title"
-            android:layout_toEndOf="@+id/tv_album_count"
-            android:text=" | "
-            android:textColor="#ACA9A9"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_Size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" | "
-            android:maxLines="1"
-            android:maxLength="25"
-            android:textAlignment="textEnd"
-            android:layout_below="@id/tv_title"
-            android:layout_toRightOf="@+id/devider"
-            android:textSize="14sp"
-            android:textColor="#ACA9A9"
-         />
-
+            android:textSize="16sp" />
 
 
     </RelativeLayout>
-
 
 
 </LinearLayout>

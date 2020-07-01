@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:title="search"
-        android:id="@+id/action_search_video"
+        android:id="@+id/action_search_media"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item android:title="Directories"
-        android:id="@+id/pickVideo"
+        android:id="@+id/pickMedia"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="never"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />

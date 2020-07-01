@@ -38,6 +38,18 @@ class HomeFragment : Fragment(R.layout.fragment_home), HomeItemRecyclerViewAdapt
                             eventType = item.homeEventItem.events)
             Navigation.findNavController(requireView()).navigate(action)
         }
+        else if(item.homeEventItem==ITEMS.OUTPUT_FOLDER)
+        {
+            Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_outputFragment)
+
+
+        }
+        else if (item.homeEventItem == ITEMS.AUDIO_CUTTER) {
+            val action =
+                    HomeFragmentDirections.actionHomeFragmentToAllAudioFragment(
+                            eventType = item.homeEventItem.events)
+            Navigation.findNavController(requireView()).navigate(action)
+        }
     }
 
 }

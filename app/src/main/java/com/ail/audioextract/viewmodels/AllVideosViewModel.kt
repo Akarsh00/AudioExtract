@@ -1,4 +1,4 @@
-package com.ail.audioextract.accessmedia
+package com.ail.audioextract.viewmodels
 
 
 import android.app.Application
@@ -12,7 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.ail.audioextract.RECENT_FOLDER_NAME
 import com.ail.audioextract.VideoSource.*
-import idv.luchafang.videotrimmerexample.getCountOfVideo
+import com.ail.audioextract.getCountOfVideo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO

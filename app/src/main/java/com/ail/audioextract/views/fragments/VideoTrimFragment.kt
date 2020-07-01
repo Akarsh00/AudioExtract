@@ -1,17 +1,29 @@
 package com.ail.audioextract.views.fragments
 
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.content.pm.PackageManager
+import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.ail.audioextract.R
 import com.ail.audioextract.SAVED_EDITED_MEDIA
+import com.github.hiteshsondhi88.libffmpeg.FFmpeg
+import com.github.hiteshsondhi88.libffmpeg.FFmpegExecuteResponseHandler
+import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -25,14 +37,18 @@ import com.otaliastudios.transcoder.sink.DataSink
 import com.otaliastudios.transcoder.sink.DefaultDataSink
 import com.otaliastudios.transcoder.source.TrimDataSource
 import com.otaliastudios.transcoder.source.UriDataSource
+import com.otaliastudios.transcoder.strategy.DefaultVideoStrategy
+import com.otaliastudios.transcoder.strategy.TrackStrategy
+import com.otaliastudios.transcoder.strategy.size.FractionResizer
 import idv.luchafang.videotrimmer.VideoTrimmerView
 import idv.luchafang.videotrimmerexample.getVideoFileDuration
 import idv.luchafang.videotrimmerexample.setTime
 import idv.luchafang.videotrimmerexample.setVideoTime
 import idv.luchafang.videotrimmerexample.uriExtractorFromPath
-import kotlinx.android.synthetic.main.base_options_layout.*
+import kotlinx.android.synthetic.main.base_options_layout.audioFormatSpinner
 import kotlinx.android.synthetic.main.fragment_trim.*
 import kotlinx.android.synthetic.main.trim_layout.*
+import kotlinx.android.synthetic.main.trim_video_dialog.*
 import java.io.File
 
 class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerView.OnSelectedRangeChangedListener {
@@ -43,29 +59,49 @@ class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerVi
     lateinit var builder: AlertDialog.Builder
     lateinit var player: SimpleExoPlayer
     lateinit var dataSourceFactory: DataSource.Factory
+    private var mTranscodeVideoStrategy: TrackStrategy? = null
+
 
     var outputFilePath = ""
 
+    var ffmpeg: FFmpeg? = null
+
     /*Video Path to trim*/
     private var videoPath: String = ""
+    private var heightOfVideo: String = ""
+    private var widthOfVideo: String = ""
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        loadFFMpegBinary()
         player = SimpleExoPlayer.Builder(requireContext()).build().also {
             it.repeatMode = SimpleExoPlayer.REPEAT_MODE_ALL
             playerView.player = it
         }
 
+
         dataSourceFactory = DefaultDataSourceFactory(requireContext(), "VideoTrimmer")
         videoPath = arguments?.let { VideoTrimFragmentArgs.fromBundle(it).videoToTrim }.toString()
         if (!videoPath.isBlank()) {
             displayTrimmerView(videoPath)
+            val metaRetriever = MediaMetadataRetriever()
+            metaRetriever.setDataSource(videoPath)
+            heightOfVideo = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+            widthOfVideo = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+
+//            audioFormatSpinner.onItemSelectedListener = this
         }
+
+
+
+
         builder = AlertDialog.Builder(requireContext())
 
         iv_trimLayoutDone.setOnClickListener {
-            startVideoTrim()
+//            startVideoTrim()
+
+            showDialog(requireActivity(), "hi there")
         }
         iv_trimLayoutCancel.setOnClickListener {
             displayTrimmerView(videoPath)
@@ -80,24 +116,70 @@ class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerVi
 
     }
 
-    private fun startVideoTrim() {
-        /* Sink has output  */
-        val sink: DataSink = DefaultDataSink(File(getNewVideoPath()).absolutePath)
-        val source = UriDataSource(requireContext(), Uri.fromFile(File(videoPath)))
-        val videoTotalLengthInTime = File(videoPath).getVideoFileDuration(requireContext())
 
-        /*  timeFromEnd-->End time  --> [TOTAL TIME -  TRIM END POSITION] */
-        val timeFromEnd = (videoTotalLengthInTime - mTrimEndPosition).toInt()
-        val trim = TrimDataSource(source, mTrimStartingPosition * 1000, timeFromEnd * 1000.toLong())
-        startTranscode(sink, trim)
+    private fun startVideoTrim() {
+        //  Sink has output
+
+
+        /* val complexCommand = arrayOf("-ss", "" + mTrimStartingPosition / 1000, "-y", "-i", File(videoPath).absolutePath, "-t", "" + (mTrimEndPosition - mTrimStartingPosition) / 1000, "-s", "320x240", "-r", "15", "-vcodec", "mpeg4", "-b:v", "2097152", "-b:a", "48000", "-ac", "2", "-ar", "22050", getNewVideoPath())
+         val moviesDir = Environment.getExternalStoragePublicDirectory(
+                 Environment.DIRECTORY_MOVIES
+         )
+
+         val filePrefix = "compress_video"
+         val fileExtn = ".mp4"
+
+         var dest = File(moviesDir, filePrefix + fileExtn)
+         var fileNo = 0
+         while (dest.exists()) {
+             fileNo++
+             dest = File(moviesDir, filePrefix + fileNo + fileExtn)
+         }
+         val c = arrayOf("-ss", "" + mTrimStartingPosition / 1000, "-y", "-i", videoPath, "-t", "" + (mTrimEndPosition - mTrimStartingPosition) / 1000, "-vcodec", "mpeg4", "-b:v", "2097152", "-b:a", "48000", "-ac", "2", "-ar", "22050", getNewVideoPath())
+         executeQuery(c)*/
     }
 
-    private fun startTranscode(sink: DataSink, trim: TrimDataSource) {
+    private fun loadFFMpegBinary() {
+        try {
+            if (ffmpeg == null) {
+                Log.d("loaded", "ffmpeg : era nulo")
+                ffmpeg = FFmpeg.getInstance(requireContext())
+            }
+            ffmpeg?.loadBinary(object : LoadBinaryResponseHandler() {
+                override fun onFailure() {
+                    Log.d("loaded", "ffmpeg : loading failure onFailure")
+
+                }
+
+                override fun onSuccess() {
+                    Log.d("loaded", "ffmpeg : correct Loaded")
+                }
+            })
+        } catch (e: FFmpegNotSupportedException) {
+            Log.d("loaded", "ffmpeg : FFmpegNotSupportedException" + e.message)
+
+        } catch (e: java.lang.Exception) {
+            Log.d("loaded", "ffmpeg : FFmpegNotSupportedException" + e.message)
+
+            Log.d("loaded", "EXception no controlada : $e")
+        }
+    }
+
+
+    private fun startTranscode(sink: DataSink, trim: TrimDataSource, fraction: Float = 1f) {
+        mTranscodeVideoStrategy = DefaultVideoStrategy.Builder()
+                .addResizer(FractionResizer(fraction))
+                .build()
         Transcoder.into(sink)
                 .addDataSource(trim)
+                .setVideoTrackStrategy(mTranscodeVideoStrategy)
                 .setListener(object : TranscoderListener {
                     override fun onTranscodeCompleted(successCode: Int) {
                         displayTrimmerView(outputFilePath)
+                        MediaScannerConnection.scanFile(context, arrayOf(outputFilePath), arrayOf("video/mp4"), object : MediaScannerConnection.MediaScannerConnectionClient {
+                            override fun onMediaScannerConnected() {}
+                            override fun onScanCompleted(s: String?, uri: Uri?) {}
+                        })
                         Toast.makeText(requireContext(), "transcode completed", Toast.LENGTH_LONG).show()
                     }
 
@@ -109,22 +191,10 @@ class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerVi
                     }
 
                     override fun onTranscodeFailed(exception: Throwable) {
-                        Toast.makeText(requireContext(), "transcode onTranscodeFailed", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(requireContext(), "transcode onTranscodeFailed", Toast.LENGTH_LONG).show()
                     }
                 }).transcode()
     }
-
-
-    private fun showOnlyTrimLayout() {
-        trimLayout.visibility = View.VISIBLE
-        baseLayout.visibility = View.GONE
-    }
-
-    private fun showBaseLayout() {
-        trimLayout.visibility = View.GONE
-        baseLayout.visibility = View.VISIBLE
-    }
-
 
     private fun getDestinationPath(): String {
         val mFinalPath: String
@@ -243,12 +313,86 @@ class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerVi
 
 
     private fun getNewVideoPath(): String {
+        val videoPath: String = File(videoPath).name
         val outputFilePath: String =
-                getDestinationPath() + "tv_fileName.text.${".mp4"}"
-        File(outputFilePath).also { it.parentFile.mkdirs() }
-
+                getDestinationPath() + "${System.currentTimeMillis()}${videoPath}"
         this.outputFilePath = outputFilePath
         return this.outputFilePath
 
     }
+
+    private fun executeQuery(query: Array<String>) {
+        ffmpeg = FFmpeg.getInstance(requireContext());
+        ffmpeg?.execute(query, object : FFmpegExecuteResponseHandler {
+            override fun onFinish() {
+
+                Toast.makeText(requireContext(), "onFinish", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onSuccess(message: String?) {
+                Toast.makeText(requireContext(), "onSuccess" + message, Toast.LENGTH_LONG).show()
+            }
+
+            override fun onFailure(message: String?) {
+                Toast.makeText(requireContext(), "onFailure" + message, Toast.LENGTH_LONG).show()
+            }
+
+            override fun onProgress(message: String?) {
+                Toast.makeText(requireContext(), "onProgress" + message, Toast.LENGTH_LONG).show()
+            }
+
+            override fun onStart() {
+                Toast.makeText(requireContext(), "onStart", Toast.LENGTH_LONG).show()
+            }
+
+        });
+    }
+
+
+    fun showDialog(activity: Activity, msg: String?) {
+        var resolution = 1f //default resolution of video is 1
+        val dialog = Dialog(activity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.trim_video_dialog)
+
+        val allOutputAudioFileForamt =
+                arrayOf("$heightOfVideo * $widthOfVideo" to 1f, "${heightOfVideo.toFloat().div(2)} * ${widthOfVideo.toFloat().div(2)}" to 1 / 2f)
+        val audioFormatArrayAdapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                allOutputAudioFileForamt
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        dialog.audioFormatSpinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                resolution = allOutputAudioFileForamt[p2].second
+            }
+
+        })
+        dialog.audioFormatSpinner.adapter = audioFormatArrayAdapter
+        dialog.save.setOnClickListener {
+//            startVideoTrim()
+            val sink: DataSink = DefaultDataSink(File(getNewVideoPath()).absolutePath)
+            val source = UriDataSource(requireContext(), Uri.fromFile(File(videoPath)))
+            val videoTotalLengthInTime = File(videoPath).getVideoFileDuration(requireContext())
+
+            //    timeFromEnd-->End time  --> [TOTAL TIME -  TRIM END POSITION]
+            val timeFromEnd = (videoTotalLengthInTime - mTrimEndPosition).toInt()
+            val trim = TrimDataSource(source, mTrimStartingPosition * 1000, timeFromEnd * 1000.toLong())
+
+            startTranscode(sink, trim,resolution.toFloat())
+        }
+        dialog.cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
 }
