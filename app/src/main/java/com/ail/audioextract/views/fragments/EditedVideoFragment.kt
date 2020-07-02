@@ -41,7 +41,6 @@ class EditedVideoFragment : Fragment(), VideoListRecyclerViewAdapter.Interaction
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String) =
                 EditedVideoFragment().apply {

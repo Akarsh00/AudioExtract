@@ -56,7 +56,6 @@ class ChooseVideosFragments : Fragment(R.layout.fragment_all_videos), VideoListR
         activity?.setSupportActionBar(toolbar)
 
         activity?.supportActionBar?.title = ""
-//        (getActivity() as AppCompatActivity).getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
 

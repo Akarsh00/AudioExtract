@@ -73,7 +73,7 @@
             android:layout_height="45dp"
             app:show_timeout="0"
             app:hide_on_touch="false"
-            app:controller_layout_id="@layout/audio_player_trim_controller"
+            app:controller_layout_id="@layout/audio_player_saved_controller"
             app:use_controller="true" />
 
         <View

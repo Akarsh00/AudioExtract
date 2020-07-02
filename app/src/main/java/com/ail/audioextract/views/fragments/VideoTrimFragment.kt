@@ -53,6 +53,7 @@ import java.io.File
 
 class VideoTrimFragment : Fragment(R.layout.fragment_video_trim), VideoTrimmerView.OnSelectedRangeChangedListener {
 
+
     private val REQ_PERMISSION = 200
     private var mTrimStartingPosition: Long = 0
     private var mTrimEndPosition: Long = 0

@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ail.audioextract.R
 import com.ail.audioextract.adapters.AudioAlbumAdapter
@@ -22,6 +23,7 @@ import com.ail.audioextract.viewmodels.AllAudiosViewModel
 import kotlinx.android.synthetic.main.fragment_all_audio.*
 import kotlinx.android.synthetic.main.fragment_all_audio.showAlbum
 import kotlinx.android.synthetic.main.fragment_all_videos.toolbar
+import java.util.*
 
 
 class ChooseAudioFragments : Fragment(R.layout.fragment_all_audio), AudioAlbumAdapter.Interaction, AudioListAdapter.Interaction {
@@ -38,7 +40,6 @@ class ChooseAudioFragments : Fragment(R.layout.fragment_all_audio), AudioAlbumAd
         activity?.setSupportActionBar(toolbar)
 
         activity?.supportActionBar?.title = ""
-//        (getActivity() as AppCompatActivity).getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24)
 
@@ -109,7 +110,7 @@ class ChooseAudioFragments : Fragment(R.layout.fragment_all_audio), AudioAlbumAd
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.pickMedia) {
 
-            Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
                     .apply {
                         type = "Audio/*"
                     }
@@ -123,13 +124,17 @@ class ChooseAudioFragments : Fragment(R.layout.fragment_all_audio), AudioAlbumAd
     }
 
     override fun onAlbumSelected(position: Int, item: AudioFolderContent) {
+        Collections.reverse(item.musicFiles)
         adapter.submitList(item.musicFiles)
         showOrHideAlbumList()
-        showOrHIdeAlbum.text=item.folderName
+        showOrHIdeAlbum.text = item.folderName
     }
 
     override fun onItemSelected(position: Int, item: AudioContent) {
-
+        val action =
+                ChooseAudioFragmentsDirections.actionAllAudioFragmentToAudioTrimFragment(
+                        audioPathToTrim = item.filePath)
+        Navigation.findNavController(requireView()).navigate(action)
     }
 
 }

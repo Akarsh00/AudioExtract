@@ -84,6 +84,7 @@ dependencies {
     implementation 'com.otaliastudios:transcoder:0.9.1'
     implementation 'com.writingminds:FFmpegAndroid:0.3.2'
 
+    implementation 'com.crystal:crystalrangeseekbar:1.1.3'
 
 
 }

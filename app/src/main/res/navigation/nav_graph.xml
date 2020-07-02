@@ -89,5 +89,17 @@
         <argument
             android:name="eventType"
             app:argType="string" />
+        <action
+            android:id="@+id/action_allAudioFragment_to_audioTrimFragment"
+            app:destination="@id/audioTrimFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/audioTrimFragment"
+        android:name="com.ail.audioextract.views.fragments.AudioTrimFragment"
+        android:label="fragment_audio_trim"
+        tools:layout="@layout/fragment_audio_trim" >
+        <argument
+            android:name="audioPathToTrim"
+            app:argType="string" />
     </fragment>
 </navigation>
